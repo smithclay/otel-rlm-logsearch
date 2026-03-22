@@ -1,9 +1,12 @@
 # otel-rlm-logsearch
 
-Natural language search over OpenTelemetry logs stored in Apache Iceberg using [DSPy's Recursive Language Model (RLM)](https://dspy.ai/). Inspired by Kevin Madura's [A Data Scientist RLM That Lives in Your Program]
-(https://kmad.ai/A-Data-Analysis-Agent-That-Lives-in-Your-Program).
+Natural language search over OpenTelemetry logs stored in Apache Iceberg using [DSPy's Recursive Language Model (RLM)](https://dspy.ai/). Inspired by Kevin Madura's [A Data Scientist RLM That Lives in Your Program](https://kmad.ai/A-Data-Analysis-Agent-That-Lives-in-Your-Program).
 
-Instead of writing SQL or grep patterns, ask questions in plain English. The RLM iteratively writes and executes Python code in a sandboxed REPL, exploring your log data without filling up the context window until it finds the answer.
+Instead of writing SQL or grep patterns, ask questions in plain English. The RLM iteratively writes and executes Python code in a sandboxed REPL, exploring your log data without filling up the context window until it finds the answer. No MCPs or subagents needed.
+
+## Why?
+
+Searching over huge log sources with lots of tool calls fill up the context window fast: RLMs avoid this and delegate more of the reasoning to the LLM itself. You also can get excellent results with smaller and cheaper models vs frontier models.
 
 ## How it works
 
@@ -28,14 +31,26 @@ The log schema follows [otlp2records](https://github.com/smithclay/otlp2records)
 
 ## Quickstart
 
-**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), [Deno](https://docs.deno.com/runtime/getting_started/installation/)
+**Prerequisites:** Python 3.10+, [Deno](https://docs.deno.com/runtime/getting_started/installation/)
+
+### Install with pip
+
+```bash
+pip install git+https://github.com/smithclay/otel-rlm-logsearch.git
+```
+
+### Install with uv (development)
 
 ```bash
 # Clone and install
 git clone https://github.com/smithclay/otel-rlm-logsearch.git
 cd otel-rlm-logsearch
 uv sync
+```
 
+### Getting started
+
+```bash
 # Download pandas/pyarrow wheels for the Pyodide sandbox
 bash scripts/setup_pyodide_packages.sh
 
@@ -46,7 +61,7 @@ uv run python scripts/generate_sample_data.py --rows 10000
 export OPENROUTER_API_KEY=your-key-here
 
 # Ask a question
-uv run otel-logsearch query "What services had the most errors?"
+otel-logsearch query "What services had the most errors?"
 ```
 
 ## CLI Usage
@@ -77,6 +92,7 @@ Options:
 Logs written to R2 via [otlp2pipeline](https://github.com/smithclay/otlp2pipeline) are stored as Iceberg tables and can be queried directly:
 
 ```bash
+# The R2 Token needs access to R2 Data Catalog with 'edit' permissions
 uv run otel-logsearch query "What services are generating the most errors?" \
     --table default.logs \
     --catalog-type rest \
