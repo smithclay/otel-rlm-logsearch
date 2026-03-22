@@ -1,0 +1,46 @@
+[project]
+name = "otel-rlm-logsearch"
+version = "0.1.0"
+description = "Natural language search over OpenTelemetry logs in Apache Iceberg using DSPy RLM"
+readme = "README.md"
+authors = [
+    { name = "Clay Smith", email = "smithclay@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "dspy>=2.6",
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+    "pyiceberg[sql-sqlite]>=0.8",
+    "click>=8.0",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+s3 = ["pyiceberg[s3]"]
+glue = ["pyiceberg[glue]"]
+dev = [
+    "pytest>=7.0",
+    "ruff",
+]
+
+[project.scripts]
+otel-logsearch = "otel_rlm_logsearch.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9.9,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+dspy = { git = "https://github.com/kmad/dspy.git", rev = "sandbox-serializable" }
+
+[tool.ty.src]
+include = ["src"]
+
+[tool.ty.environment]
+python-version = "3.11"
+
+# PyIceberg uses Pydantic models with custom __init__ that ty can't resolve yet
+[tool.ty.rules]
+missing-argument = "warn"
+too-many-positional-arguments = "warn"
