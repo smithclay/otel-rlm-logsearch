@@ -2,7 +2,11 @@
 
 Natural language search over OpenTelemetry logs stored in Apache Iceberg using [DSPy's Recursive Language Model (RLM)](https://dspy.ai/). Inspired by Kevin Madura's [A Data Scientist RLM That Lives in Your Program](https://kmad.ai/A-Data-Analysis-Agent-That-Lives-in-Your-Program).
 
-Instead of writing SQL or grep patterns, ask questions in plain English. The RLM iteratively writes and executes Python code in a sandboxed REPL, exploring your log data without filling up the context window until it finds the answer. No MCPs or subagents needed.
+Instead of writing SQL or grep patterns, ask questions in plain English. The RLM iteratively writes and executes Python code in a sandboxed REPL, exploring your log data without filling up the context window until it finds the answer.
+
+In the latest version of Claude Desktop, query results from otel-rlm-logsearch can be natively visualized with charts and graphs (via a single-tool MCP CLI wrapper). Just ask Claude to visualize the results of your question about your OTel logs:
+
+<img src="claude-dataviz.png" alt="Log data natively visualized in Claude Desktop" width="400">
 
 ## Why?
 
