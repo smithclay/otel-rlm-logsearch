@@ -147,6 +147,8 @@ Settings are loaded from CLI flags, environment variables, or defaults:
 
 ## Use as MCP Server
 
+This as an MCP allows you to visualize log search results in Claude Desktop. Think of it as a generative log search dashboard.
+
 Run as an MCP server with a single `query` tool — no cloning required. Pyodide wheels are auto-downloaded on first startup.
 
 ```bash
@@ -172,6 +174,8 @@ Add to Claude Desktop or Claude Code (`claude mcp add`):
   }
 }
 ```
+
+**Note:** Claude Desktop may not inherit your shell's `PATH`. If you get errors about Deno not being found, add the path to `deno` in the `env` block (e.g. `"PATH": "/Users/you/.deno/bin:/usr/local/bin:/usr/bin:/bin"`).
 
 ## Log schema
 
