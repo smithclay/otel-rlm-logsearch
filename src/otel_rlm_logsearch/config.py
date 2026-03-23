@@ -33,6 +33,9 @@ class AppConfig:
             ),
             warehouse=os.environ.get("OTEL_LOGSEARCH_WAREHOUSE", "./warehouse"),
         )
+        token = os.environ.get("OTEL_LOGSEARCH_TOKEN")
+        if token:
+            catalog.properties["token"] = token
         config = cls(
             catalog=catalog,
             model=os.environ.get("OTEL_LOGSEARCH_MODEL", cls.model),

@@ -19,6 +19,7 @@ dependencies = [
 [project.optional-dependencies]
 s3 = ["pyiceberg[s3]"]
 glue = ["pyiceberg[glue]"]
+mcp = ["mcp>=1.0"]
 dev = [
     "pytest>=7.0",
     "ruff",
@@ -26,6 +27,7 @@ dev = [
 
 [project.scripts]
 otel-logsearch = "otel_rlm_logsearch.cli:main"
+otel-logsearch-mcp = "otel_rlm_logsearch.mcp_server:main"
 
 [build-system]
 requires = ["uv_build>=0.9.9,<0.10.0"]

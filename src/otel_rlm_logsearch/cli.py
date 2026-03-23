@@ -45,7 +45,10 @@ def query(
 ) -> None:
     """Ask a natural language question about your OTel logs."""
     from otel_rlm_logsearch.config import AppConfig
+    from otel_rlm_logsearch.pyodide_setup import ensure_pyodide_packages
     from otel_rlm_logsearch.solver import solve
+
+    ensure_pyodide_packages()
 
     parsed_range = None
     if time_range:

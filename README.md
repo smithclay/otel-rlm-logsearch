@@ -31,37 +31,24 @@ The log schema follows [otlp2records](https://github.com/smithclay/otlp2records)
 
 ## Quickstart
 
-**Prerequisites:** Python 3.10+, [Deno](https://docs.deno.com/runtime/getting_started/installation/)
+**Prerequisites:** Python 3.10+, [uv](https://docs.astral.sh/uv/), [Deno](https://docs.deno.com/runtime/getting_started/installation/)
 
-### Install with pip
-
-```bash
-pip install git+https://github.com/smithclay/otel-rlm-logsearch.git
-```
-
-### Install with uv (development)
+### Quick start
 
 ```bash
-# Clone and install
-git clone https://github.com/smithclay/otel-rlm-logsearch.git
-cd otel-rlm-logsearch
-uv sync
-```
-
-### Getting started
-
-```bash
-# Download pandas/pyarrow wheels for the Pyodide sandbox
-bash scripts/setup_pyodide_packages.sh
-
-# Generate sample OTel log data (10k records, local Iceberg catalog)
-uv run python scripts/generate_sample_data.py --rows 10000
-
 # Set your API key
 export OPENROUTER_API_KEY=your-key-here
 
-# Ask a question
-otel-logsearch query "What services had the most errors?"
+# Run directly from GitHub (Pyodide wheels are auto-downloaded on first run)
+uvx --from "git+https://github.com/smithclay/otel-rlm-logsearch" otel-logsearch \
+    query "What services are generating the most errors?" \
+    --table default.logs \
+    --catalog-type rest \
+    --catalog-uri "https://catalog.cloudflarestorage.com/<account-id>/<bucket>" \
+    --warehouse "<account-id>_<bucket>" \
+    --token "$R2_TOKEN" \
+    --max-rows 5000 \
+    -v
 ```
 
 ## CLI Usage
@@ -152,6 +139,35 @@ Settings are loaded from CLI flags, environment variables, or defaults:
 | `OTEL_LOGSEARCH_TABLE` | Default table name |
 | `OTEL_LOGSEARCH_CATALOG_URI` | Catalog URI |
 | `OTEL_LOGSEARCH_WAREHOUSE` | Warehouse path |
+| `OTEL_LOGSEARCH_TOKEN` | Auth token for REST catalogs (e.g. Cloudflare R2) |
+
+## Use as MCP Server
+
+Run as an MCP server with a single `query` tool — no cloning required. Pyodide wheels are auto-downloaded on first startup.
+
+```bash
+uvx --from "git+https://github.com/smithclay/otel-rlm-logsearch[mcp]" otel-logsearch-mcp
+```
+
+Add to Claude Desktop or Claude Code (`claude mcp add`):
+
+```json
+{
+  "mcpServers": {
+    "otel-logsearch": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/smithclay/otel-rlm-logsearch[mcp]", "otel-logsearch-mcp"],
+      "env": {
+        "OPENROUTER_API_KEY": "your-key-here",
+        "OTEL_LOGSEARCH_CATALOG_URI": "https://catalog.cloudflarestorage.com/<account-id>/<bucket>",
+        "OTEL_LOGSEARCH_WAREHOUSE": "<account-id>_<bucket>",
+        "OTEL_LOGSEARCH_TABLE": "default.logs",
+        "OTEL_LOGSEARCH_TOKEN": "your-r2-token"
+      }
+    }
+  }
+}
+```
 
 ## Log schema
 
